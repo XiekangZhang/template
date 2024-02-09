@@ -60,5 +60,23 @@
 ### Chapter 4: Creating Layouts and Pages
 
 - Nested Routing: Next.js uses file-system routing where **folders** are used to create nested routes. Each folder represents a **route segment** that maps to a **URL segment**. `page.tsx` is a special Next.js file that exports a React component, and it's required for the route to be accessible, e.g., `/app/page.tsx` maps to the route `/` and `/app/dashboard/page.tsx` maps to the route `/dashboard`.
-- `layout.tsx` file to create UI that is shared between multiple pages. The `<Layout />` component receives a `children` prop. One benefit of using layouts in Next.js is that on navigation, only the page components update while the layout won't re-render. This is called partial rendering. 
+- `layout.tsx` file to create UI that is shared between multiple pages. The `<Layout />` component receives a `children` prop. One benefit of using layouts in Next.js is that on navigation, only the page components update while the layout won't re-render. This is called partial rendering.
 - RootLayout is required. Any UI you add to the root layout will be shared across all pages in your application. You can use the root layout to modify your `<html>` and `<body>` tags, and add metadata.
+
+### Chapter 5: Navigating Between Pages
+
+- `<Link>` allows you to do client-side navigation with JavaScript.
+- Automatic code-splitting and prefetching make the page transition near-instant.
+
+#### Pattern: Showing active links
+
+- `usePathname()` is a hook, you will need to turn tsx into c Client Component by adding `use client` at the beginning
+- ```javascript
+  className={
+    clsx(
+     'flex h-[48px] grow items-center justify-center gap-2 rounded-md bg-gray-50 p-3 text-sm font-medium hover:bg-sky-100 hover:text-blue-600 md:flex-none md:justify-start md:p-2 md:px-3',
+      {
+       'bg-sky-100 text-blue-600': pathname === link.href,
+      },
+    )}
+  ```
