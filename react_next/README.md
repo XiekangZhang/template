@@ -80,3 +80,91 @@
       },
     )}
   ```
+
+### Chapter 6: Setting Up Your Database
+
+- seed: populating the database with an initial set of data
+- in `packing.json` file, add a `seed` script to run the seed file `"seed": "node -r dotenv/config ./scripts/seed.js"`
+- run `npm run seed`
+
+### Chapter 7: Fetching Data
+
+#### Using Server Components to fetch data
+
+Benefits
+
+- Server Components support promises, providing a simpler solution for asynchronous tasks like data fetching. You can use `async/await` syntax without reaching out for `useEffect, useState` or data fetching libraries.
+- Server Components execute on the server, so you can keep expensive data fetches and logic on the server and only send the result to the client.
+- Since Server Components execute on the server, you can query the database directly without an additional API layer.
+
+#### Parallel data fetching
+
+- `await Promise.all([fetchData1(), fetchData2()])` to fetch data in parallel
+
+### Chapter 8: Static and Dynamic Rendering
+
+- Static rendering: data fetching and rendering happen on the server at build time (when you deploy) or during revalidation. The result can then be distributed and cached in a Content Delivery Network (CDN). Static rendering is great for UI with no data or data that is shared across users.
+- Dynamic rendering: content is rendered on the server for each user at request time (when the user visits the page). With dynamic rendering, your application is only as fast as your slowest data fetch.
+
+```javascript
+import { unstable_noStore as noStore } from "next/cache";
+```
+
+### Chapter 9: Streaming
+
+- Streaming is a data transfer technique that allows you to break down a route into smaller "chunks" and progressively stream them from the server to the client as they become ready. By streaming, you can prevent slow data requests from blocking your whole page. This allows the user to see and interact with parts of the page without waiting for all the data to load before any UI can be shown to the user.
+
+#### Streaming a whole page with **loading.tsx**
+
+```javascript
+import DashboardSkeleton from "@/app/ui/skeletons";
+export default function Loading() {
+  return <DashboardSkeleton />;
+}
+```
+
+#### Route groups
+
+- Route groups allow you to organize files into logical groups without affecting the URL path structure. When you create a new folder using parentheses (), the name won't be included in the URL, So `/dashboard/(overview)/page.tsx` becomes `/dashbaord`.
+
+#### Streaming a component by using Suspense
+
+```javascript
+import { Suspense } from "react";
+<Suspense fallback={<RevenueChartSkeleton />}>
+  <Dashboard />
+</Suspense>;
+```
+
+#### Grouping components
+
+```javascript
+import CardWrapper from "@/app/ui/dashboard/cards";
+<Suspense fallback={<CardsSkeleton />}>
+  <CardWrapper />
+</Suspense>;
+```
+
+```javascript
+export default async function CardWrapper() {
+  const {
+    numberOfInvoices,
+    numberOfCustomers,
+    totalPaidInvoices,
+    totalPendingInvoices,
+  } = await fetchCardData();
+
+  return (
+    <>
+      <Card title="Collected" value={totalPaidInvoices} type="collected" />
+      <Card title="Pending" value={totalPendingInvoices} type="pending" />
+      <Card title="Total Invoices" value={numberOfInvoices} type="invoices" />
+      <Card
+        title="Total Customers"
+        value={numberOfCustomers}
+        type="customers"
+      />
+    </>
+  );
+}
+```
