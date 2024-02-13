@@ -168,3 +168,76 @@ export default async function CardWrapper() {
   );
 }
 ```
+### Chapter 10: Partial Prerendering 
+- Partial Prerendering is an experimental feature introduced in Next.js 14. 
+- It's worth nothing that wrapping a component in __Suspense__ doesn't make the component itself dynamic (remember you 
+used _unstable_noStore_ to achieve this behavior), but rather __Suspense__ is used as a boundary between the static 
+and dynamic parts of your route. 
+
+### Chapter 11: Adding Search and Pagination
+#### Adding the search functionality
+- `useSearchParams`: Allows you to access the parameters of the current URL.
+- `usePathname`: Lets you read the current URL's pathname. 
+- `useRouter`: Enables navigation between routes within client components programmatically. 
+````javascript
+'use client'; // This is a Client component, which means you can use event listeners and hooks
+import {useSearchParams, usePathname, useRouter} from 'next/navigation';
+
+export default function Search() {
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const { replace } = useRouter();
+  function handleSearch(term: string) {
+    const params = new URLSearchParams(searchParams); // ?page=1&query=a
+    if (term) {
+        params.set("query", term);
+    } else {
+        params.delete("query");
+    }
+    replace(`${pathname}?${params.toString()}`);
+  }
+    return (
+            <input 
+                    onChange={(e) => {
+                      handleSearch(e.target.value);
+                    }}
+                    defaultValue={searchParams.get("query")?.toString()} // defaultValue vs value --> Uncontrolled vs Controlled
+            ></input>
+    )
+}
+````
+- As a general rule, if you want to read the params from the client, use the `useSearchParams()` hook as this avoids having to go back to the server.
+- Pass the `searchParams` prop from the page to the component by using Server Components 
+#### Best practices: Debouncing
+- Debouncing is a programming practice that limits the rate at which a function can fire. It's a good practice to debounce the search input to avoid making too many requests to the server.
+````
+npm i use-debounce
+````
+````javascript
+import { useDebouncedCallback } from 'use-debounce';
+const handleSearch = useDebouncedCallback((term: string) => {
+  const params = new URLSearchParams(searchParams);
+  if (term) {
+    params.set("query", term);
+  } else {
+    params.delete("query");
+  }
+  replace(`${pathname}?${params.toString()}`);
+}, 300);
+````
+#### Adding pagination
+
+### Chapter 12: Mutating Data
+#### Server Actions
+- React Server Actions allow you to run asynchronous code directly on the server. Server Actions offer an effective security solution, protecting against different types of attacks, securing your data, and ensuring authorized access. 
+#### Using forms with Server Actions
+````javascript
+export default function Page() {
+    async function create(formData: FormData) {
+        'use server';
+        // logic
+    }
+  return <form action={create}>...</form>
+}
+````
+- An advantage of invoking a Server Action within a Server Component is progressive enhancement - forms work even if JavaScript is disabled on the client.
