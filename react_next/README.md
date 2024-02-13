@@ -241,3 +241,5 @@ export default function Page() {
 }
 ````
 - An advantage of invoking a Server Action within a Server Component is progressive enhancement - forms work even if JavaScript is disabled on the client.
+- You can use `Zod` to handle type validation
+#### Dynamic Route Segment by using square brackets [id]
