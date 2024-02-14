@@ -243,3 +243,33 @@ export default function Page() {
 - An advantage of invoking a Server Action within a Server Component is progressive enhancement - forms work even if JavaScript is disabled on the client.
 - You can use `Zod` to handle type validation
 #### Dynamic Route Segment by using square brackets [id]
+
+### Chapter 13: Handling Errors
+- Handling all errors with `error.tsx`, it needs `use client` and accepts two props `error` and `reset`.
+
+### Chapter 14: Improving Accessibility
+- Accessibility refers to designing and implementing web applications that everyone ca use, including those with disabilities. 
+  - add `next lint` as a script in your `package.json` file 
+  - `npm run lint` to run the linter
+#### Form Validation
+- Client-Side validation by adding `required` attribute to the input field
+- Server-Side validation 
+````javascript
+'use client';
+import { useFormState } from 'react-dom';
+````
+
+### Chapter 15: Adding Authentication
+- Authentication is about making sure the user is who they say they are. You're proving your identity with something you have like a username and password.
+- Authorization is the next step. Once a user's identity is confirmed, authorization decides what parts of the application they are allowed to use. 
+- https://authjs.dev/reference/nextjs
+
+### Chapter 16: Adding Metadata
+- Metadata is usually hidden information and crucial for search engines and other systems. In other words, metadata plays a significant role in enhancing a webpage's SEO, making it more accessible and understandable for search engines and social media platforms. 
+- Config-based: export a _static metadata object_ or a dynamic _generateMedata function_ in a _layout.js_ or _page.js_ file.
+- File-based:
+  - _favicon.ico_, _apple-icon.jpg_, and _icon.jpg_: utilized for favicons and icons
+  - _opengraph-image.jpg_ and _twitter-image.jpg_: employed for social media images
+  - _robots.txt_: provides instructions for search engine crawling
+  - _sitemap.xml_: offers information about the website's structure
+- Metadata in nested pages will overwrite the metadata in the parent. 
